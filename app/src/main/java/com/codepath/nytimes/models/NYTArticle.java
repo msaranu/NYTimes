@@ -138,6 +138,9 @@ public class NYTArticle implements Parcelable {
     };
 
     public String getWebUrl() {
+        if(webUrl !=null){
+            return webUrl.replace("\\",""); // TODO: Add the URL to properties file
+        }
         return webUrl;
     }
 

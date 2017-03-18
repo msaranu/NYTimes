@@ -5,18 +5,50 @@ package com.codepath.nytimes.service;
  */
 
 import com.codepath.nytimes.models.NYTArticleResponse;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public class NYTimesClient {
-    private final String API_KEY = "a5ac3eb802f44561b5fa0f398b07f65f";
-    private final String API_BASE_URL = "https://api.nytimes.com/";
+    public static final String API_KEY = "a5ac3eb802f44561b5fa0f398b07f65f";
+    public static final String API_BASE_URL = "https://api.nytimes.com/";
+    NYTimesClient.NYTimesService NYservice;
+
+    public NYTimesClient.NYTimesService NYTimesClientFactory(){
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        NYservice = retrofit.create(NYTimesClient.NYTimesService.class);
+
+        return NYservice;
+
+    }
 
     public interface NYTimesService
     {
-            @GET("svc/search/v2/articlesearch.json?begin_date=20160112&sort=oldest&fq=news_desk:(%22Politics%22)&api-key=a5ac3eb802f44561b5fa0f398b07f65f")
-            Call<NYTArticleResponse> getArticlesFromServer();
+            @GET("/svc/search/v2/articlesearch.json")
+            Call<NYTArticleResponse> getArticlesFromServer(@Query("api-key") String api_key,
+                                                           @Query("page") Integer page_number,
+                                                           @Query("q") String search_string,
+                                                           @Query("begin_date") String begin_date,
+                                                           @Query("sort") String sort_order,
+                                                           @Query("fl") String news_desk);
+
+            @GET("/svc/search/v2/articlesearch.json")
+            Call<NYTArticleResponse> getArticlesFromServer(@Query("api-key") String api_key);
     }
 
 

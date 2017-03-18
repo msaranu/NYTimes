@@ -71,6 +71,9 @@ public class NYTArticleMultiMedia implements Parcelable {
     }
 
     public String getUrl() {
+        if(url !=null){
+            return "http://www.nytimes.com/" + url.replace("\\",""); // TODO: Add the URL to properties file
+        }
         return url;
     }
 

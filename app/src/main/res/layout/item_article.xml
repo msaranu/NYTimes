@@ -5,27 +5,35 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/border">
 
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             app:srcCompat="@mipmap/ic_launcher"
-            android:id="@+id/ivArticleImage" />
+            android:id="@+id/ivArticleImage"
+            android:layout_marginTop="3dp"
+            android:layout_gravity="center"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="HeadLine"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:textSize="@dimen/large_text"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:id="@+id/tvArticleHeadline" />
 
         <TextView
             android:text="NewsDesk"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/red"
+            android:textColor="@color/white"
+            android:layout_marginLeft="3dp"
             android:id="@+id/tvArticleCategory" />
 
         <TextView
@@ -33,5 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="4"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:textSize="@dimen/small_text"
             android:id="@+id/tvArticleSynopsis" />
     </LinearLayout>

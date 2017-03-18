@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+   >
+
+    <TextView
+        android:text="@string/tvBeginDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvBeginDate"
+        android:gravity="center"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:layout_below="@id/tvBeginDate"
+        android:text="Begin Date"
+        android:ems="10"
+        android:id="@+id/etBeginDate"
+         android:gravity="center" />
+
+    <TextView
+        android:text="@string/tvSortOrder"
+        android:layout_width="match_parent"
+        android:layout_below="@id/etBeginDate"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvSortOrder"
+        android:gravity="center"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvSortOrder"
+        android:id="@+id/spSortOrder"
+        android:gravity="center"/>
+
+    <TextView
+        android:text="@string/tvNewsDesk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvNewsDesk"
+        android:layout_below="@id/spSortOrder"
+        android:gravity="center"/>
+
+    <CheckBox
+        android:text="@string/cbFilter1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cbFilter1"
+        android:layout_below="@id/tvNewsDesk"
+        android:layout_marginLeft="150dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"/>
+
+    <CheckBox
+        android:text="@string/cbFilter2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cbFilter2"
+        android:layout_below="@id/cbFilter1"
+        android:layout_alignLeft="@id/cbFilter1"
+        android:layout_alignStart="@id/cbFilter1"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"/>
+
+    <CheckBox
+        android:text="@string/cbFilter3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cbFilter2"
+        android:layout_alignLeft="@id/cbFilter1"
+        android:layout_alignStart="@id/cbFilter1"
+        android:id="@+id/cbFilter3"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"/>
+
+
+    <Button
+        android:text="@string/btnFilterSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cbFilter3"
+        android:layout_alignLeft="@id/cbFilter1"
+        android:layout_alignStart="@id/cbFilter1"
+        android:id="@+id/btnFilterSubmit"
+        android:gravity="center"/>
+
+</RelativeLayout>

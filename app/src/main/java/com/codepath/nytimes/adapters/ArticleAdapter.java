@@ -1,6 +1,7 @@
 package com.codepath.nytimes.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.nytimes.R;
+import com.codepath.nytimes.activities.NYTArticleActivity;
+import com.codepath.nytimes.listeners.ItemClickSupport;
 import com.codepath.nytimes.models.NYTArticle;
 
 import java.util.List;
@@ -25,6 +29,7 @@ import butterknife.ButterKnife;
 public class ArticleAdapter extends
         RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
 
+    RecyclerView mRecyclerView;
     // Store a member variable for the contacts
     private List<NYTArticle> mArticles;
     // Store the context for easy access
@@ -35,6 +40,12 @@ public class ArticleAdapter extends
         mContext = context;
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+
+        mRecyclerView = recyclerView;
+    }
     // Easy access to the context object in the recyclerview
     private Context getContext() {
         return mContext;
@@ -74,7 +85,19 @@ public class ArticleAdapter extends
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(articleView);
-        return viewHolder;
+
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                Intent i = new Intent(getContext(), NYTArticleActivity.class);
+                i.putExtra("urlChrome", mArticles.get(position).getWebUrl());
+                v.getContext().startActivity(i);
+            }
+        });
+
+
+    return viewHolder;
+
     }
 
 
@@ -87,10 +110,12 @@ public class ArticleAdapter extends
         // Set item views based on your views and data model
 
         ImageView ivImage = viewHolder.IvArticleImage;
-      //  ivImage.setImageResource(0);
-
-        TextView tvHeadline = viewHolder.tvArticleHeadline;
-        tvHeadline.setText(Nytarticle.getHeadline().getMain());
+        ivImage.setImageResource(0);
+        if(Nytarticle.getMultimedia() !=null && !(Nytarticle.getMultimedia().isEmpty())) {
+            String url = Nytarticle.getMultimedia().get(0).getUrl();
+            Glide.with(mContext).load(url).into(ivImage);
+        }
+        viewHolder.tvArticleHeadline.setText(Nytarticle.getHeadline().getMain());
 
         TextView tvCategory = viewHolder.tvArticleCategory;
         tvCategory.setText(Nytarticle.getNewsDesk());
@@ -98,6 +123,21 @@ public class ArticleAdapter extends
         TextView tvSynopsis = viewHolder.tvArticleSynopsis;
         tvSynopsis.setText(Nytarticle.getSnippet());
 
+        setBackgroundNewsDesk(Nytarticle, viewHolder);
+
+    }
+
+    private void setBackgroundNewsDesk(NYTArticle nytarticle, ViewHolder viewHolder) {
+        if (nytarticle.getNewsDesk() != null) {
+            if (nytarticle.getNewsDesk().toUpperCase().equals("ARTS")) {
+                viewHolder.tvArticleCategory.setBackgroundColor(0xff00ff00);
+            } else if (nytarticle.getNewsDesk().toUpperCase().equals("FASHION")) {
+                viewHolder.tvArticleCategory.setBackgroundColor(0xffff0000);
+            } else if (nytarticle.getNewsDesk().toUpperCase().equals("SPORTS")) {
+                viewHolder.tvArticleCategory.setBackgroundColor(0xff00ffff);
+            } else
+                viewHolder.tvArticleCategory.setBackgroundColor(0xffff00ff);
+        }
     }
 
     // Returns the total count of items in the list

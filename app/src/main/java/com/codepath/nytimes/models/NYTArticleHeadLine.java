@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  * Created by Saranu on 3/15/17.
  */
@@ -25,7 +27,7 @@ public class NYTArticleHeadLine implements Parcelable{
     }
 
     public String getMain() {
-        return main;
+        return StringEscapeUtils.unescapeHtml3(main);
     }
 
     public void setMain(String main) {
