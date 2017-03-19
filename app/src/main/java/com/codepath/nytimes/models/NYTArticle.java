@@ -83,6 +83,27 @@ public class NYTArticle implements Parcelable {
     @Expose
     private Object slideshowCredits;
 
+    private int articleColor;
+
+    public int getArticleColor() {
+        if (getNewsDesk() != null) {
+            if (getNewsDesk().toUpperCase().equals("ARTS")) {
+                return 0xff00ff00;
+            } else if (getNewsDesk().toUpperCase().equals("FASHION")) {
+                return 0xffff0000;
+            } else if (getNewsDesk().toUpperCase().equals("SPORTS")) {
+                return 0xff00ffff;
+            } else
+                return 0xffff00ff;
+        }
+        return articleColor;
+    }
+
+
+    public void setArticleColor(int articleColor) {
+        this.articleColor = articleColor;
+    }
+
     protected NYTArticle(Parcel in) {
         webUrl = in.readString();
         snippet = in.readString();
@@ -99,6 +120,7 @@ public class NYTArticle implements Parcelable {
         typeOfMaterial = in.readString();
         id = in.readString();
         wordCount = in.readString();
+        articleColor = in.readInt();
     }
 
     @Override
@@ -118,6 +140,7 @@ public class NYTArticle implements Parcelable {
         dest.writeString(typeOfMaterial);
         dest.writeString(id);
         dest.writeString(wordCount);
+        dest.writeInt(articleColor);
     }
 
     @Override

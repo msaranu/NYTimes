@@ -1,48 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="filter" type="com.codepath.nytimes.models.FilterSettings"/>
+    </data>
+
+    <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-   >
+    android:layout_height="wrap_content">
 
     <TextView
         android:text="@string/tvBeginDate"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvBeginDate"
-        android:gravity="center"/>
+        android:textColor="@color/purple"
+        android:textStyle="bold"
+        android:textSize="@dimen/large_text"
+        android:layout_centerHorizontal="true"/>
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
+        android:hint="Enter/Pick a Date"
         android:layout_below="@id/tvBeginDate"
-        android:text="Begin Date"
-        android:ems="10"
+        android:text="@{filter.beginDate}"
         android:id="@+id/etBeginDate"
-         android:gravity="center" />
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/small_text"
+        android:layout_marginBottom="20dp"/>
 
     <TextView
         android:text="@string/tvSortOrder"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_below="@id/etBeginDate"
         android:layout_height="wrap_content"
         android:id="@+id/tvSortOrder"
-        android:gravity="center"/>
+        android:layout_alignLeft="@id/tvBeginDate"
+        android:layout_alignStart="@id/tvBeginDate"
+        android:textColor="@color/purple"
+        android:textStyle="bold"
+        android:textSize="@dimen/large_text"/>
 
     <Spinner
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvSortOrder"
         android:id="@+id/spSortOrder"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:entries="@array/sort_order"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/small_text"
+        android:layout_marginBottom="20dp"/>
 
     <TextView
         android:text="@string/tvNewsDesk"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvNewsDesk"
         android:layout_below="@id/spSortOrder"
-        android:gravity="center"/>
+        android:layout_alignLeft="@id/tvBeginDate"
+        android:layout_alignStart="@id/tvBeginDate"
+        android:textColor="@color/purple"
+        android:textStyle="bold"
+        android:textSize="@dimen/large_text"/>
 
     <CheckBox
         android:text="@string/cbFilter1"
@@ -50,9 +76,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/cbFilter1"
         android:layout_below="@id/tvNewsDesk"
-        android:layout_marginLeft="150dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"/>
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/small_text"/>
 
     <CheckBox
         android:text="@string/cbFilter2"
@@ -62,19 +89,22 @@
         android:layout_below="@id/cbFilter1"
         android:layout_alignLeft="@id/cbFilter1"
         android:layout_alignStart="@id/cbFilter1"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"/>
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/small_text"/>
 
     <CheckBox
         android:text="@string/cbFilter3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/cbFilter2"
+        android:id="@+id/cbFilter3"
         android:layout_alignLeft="@id/cbFilter1"
         android:layout_alignStart="@id/cbFilter1"
-        android:id="@+id/cbFilter3"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"/>
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/small_text"
+        android:layout_marginBottom="20dp"/>
 
 
     <Button
@@ -85,6 +115,13 @@
         android:layout_alignLeft="@id/cbFilter1"
         android:layout_alignStart="@id/cbFilter1"
         android:id="@+id/btnFilterSubmit"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="@dimen/large_text"
+        android:background="@color/purple"
+        android:layout_marginBottom="20dp"
+        />
 
 </RelativeLayout>
+</layout>

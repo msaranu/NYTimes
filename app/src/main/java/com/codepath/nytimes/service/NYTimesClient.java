@@ -25,7 +25,6 @@ public class NYTimesClient {
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .create();
 
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -37,6 +36,10 @@ public class NYTimesClient {
 
     }
 
+    public static NYTimesClient getNewInstance() {
+        return new NYTimesClient();
+    }
+
     public interface NYTimesService
     {
             @GET("/svc/search/v2/articlesearch.json")
@@ -45,7 +48,7 @@ public class NYTimesClient {
                                                            @Query("q") String search_string,
                                                            @Query("begin_date") String begin_date,
                                                            @Query("sort") String sort_order,
-                                                           @Query("fl") String news_desk);
+                                                           @Query("fq") String news_desk);
 
             @GET("/svc/search/v2/articlesearch.json")
             Call<NYTArticleResponse> getArticlesFromServer(@Query("api-key") String api_key);
@@ -55,4 +58,6 @@ public class NYTimesClient {
     private String getApiUrl(String relativeUrl) {
         return API_BASE_URL + relativeUrl;
     }
+
+
 }

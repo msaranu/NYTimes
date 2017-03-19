@@ -1,7 +1,6 @@
 package com.codepath.nytimes.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +10,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.nytimes.R;
-import com.codepath.nytimes.activities.NYTArticleActivity;
 import com.codepath.nytimes.listeners.ItemClickSupport;
 import com.codepath.nytimes.models.NYTArticle;
+import com.codepath.nytimes.service.ChromeCustomTabService;
 
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class ArticleAdapter extends
 
     RecyclerView mRecyclerView;
     // Store a member variable for the contacts
+    ChromeCustomTabService chromeCustomTabService;
     private List<NYTArticle> mArticles;
     // Store the context for easy access
     private Context mContext;
@@ -89,9 +89,12 @@ public class ArticleAdapter extends
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Intent i = new Intent(getContext(), NYTArticleActivity.class);
+                //Replace webview with Chrome
+                /*    Intent i = new Intent(getContext(), NYTArticleActivity.class);
                 i.putExtra("urlChrome", mArticles.get(position).getWebUrl());
-                v.getContext().startActivity(i);
+                v.getContext().startActivity(i); */
+
+                ChromeCustomTabService.getInstance().launchChromeCustomTab(v,mArticles.get(position).getWebUrl(),mArticles.get(position).getArticleColor());
             }
         });
 
@@ -119,25 +122,11 @@ public class ArticleAdapter extends
 
         TextView tvCategory = viewHolder.tvArticleCategory;
         tvCategory.setText(Nytarticle.getNewsDesk());
+        tvCategory.setBackgroundColor(Nytarticle.getArticleColor());
 
         TextView tvSynopsis = viewHolder.tvArticleSynopsis;
         tvSynopsis.setText(Nytarticle.getSnippet());
-
-        setBackgroundNewsDesk(Nytarticle, viewHolder);
-
-    }
-
-    private void setBackgroundNewsDesk(NYTArticle nytarticle, ViewHolder viewHolder) {
-        if (nytarticle.getNewsDesk() != null) {
-            if (nytarticle.getNewsDesk().toUpperCase().equals("ARTS")) {
-                viewHolder.tvArticleCategory.setBackgroundColor(0xff00ff00);
-            } else if (nytarticle.getNewsDesk().toUpperCase().equals("FASHION")) {
-                viewHolder.tvArticleCategory.setBackgroundColor(0xffff0000);
-            } else if (nytarticle.getNewsDesk().toUpperCase().equals("SPORTS")) {
-                viewHolder.tvArticleCategory.setBackgroundColor(0xff00ffff);
-            } else
-                viewHolder.tvArticleCategory.setBackgroundColor(0xffff00ff);
-        }
+        
     }
 
     // Returns the total count of items in the list

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NYTimes</string>
+    <string name="app_name">The New York Times</string>
     <string name="action_settings">Settings</string>
     <string name="etSearchHint">Enter search query</string>
     <string name="btnSearchText">SEARCH</string>
@@ -7,9 +7,13 @@
     <string name="tvSortOrder">Sort Order</string>
     <string name="tvNewsDesk">News Desk Values</string>
     <string name="cbFilter1">Arts</string>
-    <string name="cbFilter2">Fashion &amp; Style</string>
+    <string name="cbFilter2">Fashion,Style</string>
     <string name="cbFilter3">Sports</string>
     <string name="btnFilterSubmit">SAVE</string>
     <string name="btnFilterText">FILTER</string>
     <string name="title_activity_nytarticle">NYTArticleActivity</string>
+    <string-array name="sort_order">
+        <item>Oldest</item>
+        <item>Newest</item>
+    </string-array>
 </resources>

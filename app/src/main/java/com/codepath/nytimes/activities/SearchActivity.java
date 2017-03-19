@@ -1,10 +1,14 @@
 package com.codepath.nytimes.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +25,7 @@ import com.codepath.nytimes.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.nytimes.models.FilterSettings;
 import com.codepath.nytimes.models.NYTArticle;
 import com.codepath.nytimes.models.NYTArticleResponse;
+import com.codepath.nytimes.network.NetworkUtil;
 import com.codepath.nytimes.service.NYTimesClient;
 
 import java.util.ArrayList;
@@ -39,15 +44,23 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     ArrayList<NYTArticle> articles;
     ArticleAdapter adapter;
     int FIRST_PAGE =0;
-    FilterSettings fragFilterSettings = new FilterSettings();
+    FilterSettings fragFilterSettings;
     private EndlessRecyclerViewScrollListener scrollListener;
+    String searchQuery;
+    ProgressDialog progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
+        setSupportActionBar(toolbar);
+
         ButterKnife.bind(this);
+        fragFilterSettings = new FilterSettings();
          // Create adapter passing in the sample user data
         articles = new ArrayList<>();
         adapter = new ArticleAdapter(this, articles);
@@ -89,63 +102,82 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     public void getArticles(int page) {
         {
-            String query = etQuery.getText().toString();
-            String BASE_URL = "https://api.nytimes.com/";
-            if(page == FIRST_PAGE){
+           // String query = etQuery.getText().toString();
+          //  String BASE_URL = "https://api.nytimes.com/";
+            if (page == FIRST_PAGE) {
                 articles.clear();
                 scrollListener.resetState();
             }
 
-            NYTimesClient NYTClient = new NYTimesClient();
-         //  Call<NYTArticleResponse> call = NYTClient.NYTimesClientFactory().
-         //           getArticlesFromServer("a5ac3eb802f44561b5fa0f398b07f65f");
+            NYTimesClient NYTClient = NYTimesClient.getNewInstance();
 
-         //   Call<NYTArticleResponse> call = NYTClient.NYTimesClientFactory().
-                    //         getArticlesFromServer("a5ac3eb802f44561b5fa0f398b07f65f", new Integer(pageNumber),query,fragFilterSettings.beginDate,
-                    //               fragFilterSettings.sortOrder, getQueryStringNewsDesk());
+            if (NetworkUtil.isInternetAvailable(getApplicationContext()) && NetworkUtil.isOnline()) {
 
-            Call<NYTArticleResponse> call = NYTClient.NYTimesClientFactory().
-                          getArticlesFromServer("a5ac3eb802f44561b5fa0f398b07f65f", new Integer(page),query,fragFilterSettings.beginDate,
-                                   fragFilterSettings.sortOrder, null);
+                Call<NYTArticleResponse> call = NYTClient.NYTimesClientFactory().
+                        getArticlesFromServer("a5ac3eb802f44561b5fa0f398b07f65f", new Integer(page), searchQuery, fragFilterSettings.beginDate,
+                                fragFilterSettings.sortOrder, fragFilterSettings.getNewsDeskQuery());
 
-                            call.enqueue(new Callback<NYTArticleResponse>(){
-                @Override
-                public void onResponse(Call<NYTArticleResponse> call, Response<NYTArticleResponse> response) {
-                    Toast.makeText(SearchActivity.this, "This is my Toast SUCCESS!",
-                            Toast.LENGTH_LONG).show();
-                    NYTArticleResponse NYTAr = response.body();
-                    if(NYTAr == null) {
+               //  progressDialog = new ProgressDialog(getApplicationContext());
+                //progressDialog.setMessage("Fetching The File....");
+               // progressDialog.show();
 
-                        Toast.makeText(SearchActivity.this, "No results matching search!",
-                                Toast.LENGTH_LONG).show();
-                    }else {
-                        articles.addAll(NYTAr.getResponse().getArticles());
-                        adapter.notifyDataSetChanged();
+                call.enqueue(new Callback<NYTArticleResponse>() {
+                    @Override
+                    public void onResponse(Call<NYTArticleResponse> call, Response<NYTArticleResponse> response) {
+                        NYTArticleResponse NYTAr = response.body();
+                        if (NYTAr == null) {
+
+                            Toast.makeText(SearchActivity.this, "No articles matching search!",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            articles.addAll(NYTAr.getResponse().getArticles());
+                            adapter.notifyDataSetChanged();
+                        }
+//                        progressDialog.dismiss();
                     }
-                }
 
-                @Override
-                public void onFailure(Call<NYTArticleResponse> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<NYTArticleResponse> call, Throwable t) {
 
-                    Toast.makeText(SearchActivity.this, "This is my Toast FAILURE!",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+                        Toast.makeText(SearchActivity.this, "Request to API failed!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
 
+            } else {
+                Toast.makeText(SearchActivity.this, "Internet Connection is unavailable. Try again later",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
         }
     }
 
-    private String getQueryStringNewsDesk() {
 
-        String queryNewsDesk = fragFilterSettings.getNdArtsCheck()+","+fragFilterSettings.getNdFashionCheck()+","+fragFilterSettings.getNdSportsCheck();
-        return queryNewsDesk;
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                searchQuery = query;
+                getArticles(FIRST_PAGE);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -157,6 +189,8 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            View v = findViewById(R.id.action_settings);
+            onFilterSettings(v);
             return true;
         }
 

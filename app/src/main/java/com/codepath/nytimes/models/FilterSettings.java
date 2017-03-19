@@ -79,6 +79,18 @@ public class FilterSettings implements Parcelable {
         this.ndSportsCheck = ndSportsCheck;
     }
 
+    public String getNewsDeskQuery(){
+        String ndStringQuery=null;
+        if(getNdArtsCheck()!=null || getNdFashionCheck() !=null || getNdSportsCheck()!=null){
+            ndStringQuery="news_desk:(";
+            if(getNdArtsCheck() != null){ ndStringQuery += getNdArtsCheck() + ",";}
+            if(getNdFashionCheck() != null){ ndStringQuery += getNdFashionCheck()+ ",";}
+            if(getNdSportsCheck() != null){ ndStringQuery += getNdSportsCheck();}
+            ndStringQuery=ndStringQuery+")";
+        }
+        return ndStringQuery;
+    }
+
     @Override
     public int describeContents() {
         return 0;
