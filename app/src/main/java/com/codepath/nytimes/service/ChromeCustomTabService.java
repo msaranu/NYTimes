@@ -22,7 +22,7 @@ public class ChromeCustomTabService {
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setToolbarColor(color);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(v.getContext().getResources(), R.drawable.ic_action_share2);
+        Bitmap bitmap = BitmapFactory.decodeResource(v.getContext().getResources(), R.drawable.ic_share_alt_1);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, url);

@@ -126,7 +126,7 @@ public class ArticleAdapter extends
 
         TextView tvSynopsis = viewHolder.tvArticleSynopsis;
         tvSynopsis.setText(Nytarticle.getSnippet());
-        
+
     }
 
     // Returns the total count of items in the list

@@ -87,15 +87,15 @@ public class NYTArticle implements Parcelable {
 
     public int getArticleColor() {
         if (getNewsDesk() != null) {
-            if (getNewsDesk().toUpperCase().equals("ARTS")) {
-                return 0xff00ff00;
-            } else if (getNewsDesk().toUpperCase().equals("FASHION")) {
-                return 0xffff0000;
-            } else if (getNewsDesk().toUpperCase().equals("SPORTS")) {
-                return 0xff00ffff;
+            if (getSectionName().toUpperCase().equals("ARTS")) {
+                articleColor= 0xff00ff00;
+            } else if (getSectionName().toUpperCase().equals("FASHION")) {
+                articleColor= 0xffff0000;
+            } else if (getSectionName().toUpperCase().equals("SPORTS")) {
+                articleColor= 0xff00ffff;
             } else
-                return 0xffff00ff;
-        }
+                articleColor = 0xffff00ff;
+            }
         return articleColor;
     }
 
