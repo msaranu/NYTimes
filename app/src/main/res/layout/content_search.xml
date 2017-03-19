@@ -10,7 +10,7 @@
     tools:showIn="@layout/activity_search">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/tbSearch"
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,41 +18,10 @@
         android:background="@color/purple">
     </android.support.v7.widget.Toolbar>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:layout_toLeftOf="@+id/btnSearch"
-        android:layout_toStartOf="@+id/btnSearch"
-        android:id="@+id/etQuery"
-        android:hint="@string/etSearchHint" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/etQuery"
-        android:layout_below="@id/toolbar"
-        android:layout_toLeftOf="@+id/btnFilterSettings"
-        android:layout_toStartOf="@+id/btnFilterSettings"
-        android:id="@+id/btnSearch"
-        android:text="@string/btnSearchText"
-        android:onClick="onArticleSearch"/>
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnFilterSettings"
-        android:text="@string/btnFilterText"
-        android:layout_below="@id/toolbar"
-        android:onClick="onFilterSettings"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvArticles"
-        android:layout_below="@id/etQuery"
+        android:layout_below="@id/tbSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

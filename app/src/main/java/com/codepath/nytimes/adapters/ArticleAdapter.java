@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.nytimes.R;
-import com.codepath.nytimes.listeners.ItemClickSupport;
+import com.codepath.nytimes.decorators.ItemClickSupport;
 import com.codepath.nytimes.models.NYTArticle;
 import com.codepath.nytimes.service.ChromeCustomTabService;
 
@@ -86,16 +86,8 @@ public class ArticleAdapter extends
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(articleView);
 
-        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                //Replace webview with Chrome
-                /*    Intent i = new Intent(getContext(), NYTArticleActivity.class);
-                i.putExtra("urlChrome", mArticles.get(position).getWebUrl());
-                v.getContext().startActivity(i); */
-
-                ChromeCustomTabService.getInstance().launchChromeCustomTab(v,mArticles.get(position).getWebUrl(),mArticles.get(position).getArticleColor());
-            }
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener((recyclerView, position, v) -> {
+               ChromeCustomTabService.getInstance().launchChromeCustomTab(v,mArticles.get(position).getWebUrl(),mArticles.get(position).getArticleColor());
         });
 
 

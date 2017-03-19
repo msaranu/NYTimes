@@ -236,6 +236,10 @@ public class NYTArticle implements Parcelable {
     }
 
     public String getNewsDesk() {
+        if(newsDesk == null) {
+
+            newsDesk = "General";
+        }
         return newsDesk;
     }
 
