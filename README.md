@@ -47,7 +47,6 @@ The following **additional** features are implemented:
 Here's a walkthrough of implemented user stories:
 
 <img src="http://i.imgur.com/WR6MDT7.gif" title='The New York Times' />
-<img src="http://i.imgur.com/sWJZQ9P.gif" title='Flicks Portrait' />
 
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
