@@ -31,7 +31,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="@dimen/small_text"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="@dimen/margin_bottom"/>
 
     <TextView
         android:text="@string/tvSortOrder"
@@ -56,7 +56,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="@dimen/small_text"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="@dimen/margin_bottom"/>
 
     <TextView
         android:text="@string/tvNewsDesk"
@@ -104,7 +104,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="@dimen/small_text"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="@dimen/margin_bottom"/>
 
 
     <Button
@@ -120,7 +120,7 @@
         android:textStyle="bold"
         android:textSize="@dimen/large_text"
         android:background="@color/purple"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="@dimen/margin_bottom"
         />
 
 </RelativeLayout>

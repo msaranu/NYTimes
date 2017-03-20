@@ -1,26 +1,43 @@
 package com.codepath.nytimes.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by Saranu on 3/17/17.
  */
 
 public class DateUtil{
 
-    public static String formatDatetoString(String dateString) {
-        String[] arrayDate = dateString.split("/");
-        if(arrayDate[0].length() != 2){
-            arrayDate[0] = '0'+ arrayDate[0];
+    public static String formatDatetoAPI(String dateString) {
+        String formattedDate=null;
+        try {
+            formattedDate =  new SimpleDateFormat("yyyyMMdd", Locale.US).
+                    format(new SimpleDateFormat("MM/dd/yyyy",Locale.US).parse(dateString));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        if(arrayDate[1].length() != 2){
-            arrayDate[1] = '0'+ arrayDate[1];
-        }
-        return arrayDate[2]+arrayDate[0]+arrayDate[1];
-    }
-
-    public static String formatStringtoDate(String dateString) {
-        return dateString.substring(5,6)+"/" + dateString.substring(7,8)+"/"+dateString.substring(0,4);
+        return formattedDate;
     }
 
 
+    public static Date formatDatefromAPI(String dateString) {
+        Date formattedDate=null;
+        try {
+            formattedDate =   new SimpleDateFormat("yyyyMMdd",Locale.US).parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return formattedDate;
+    }
 
+
+    public static String formatDate(Calendar dateString) {
+        String formattedDate=null;
+        formattedDate =   new SimpleDateFormat("MM/dd/yyyy",Locale.US).format(dateString.getTime());
+        return formattedDate;
+    }
 }

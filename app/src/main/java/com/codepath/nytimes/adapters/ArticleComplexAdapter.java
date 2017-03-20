@@ -23,6 +23,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.nytimes.properties.Properties.FIRST_MM_IMAGE;
+
 /**
  * Created by Saranu on 3/16/17.
  */
@@ -111,79 +113,54 @@ public class ArticleComplexAdapter extends
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-
-        // Set item views based on your views and data model
-
+        NYTArticle Nytarticle = mArticles.get(position);
 
         switch (viewHolder.getItemViewType()) {
             case IMAGE:
                 ArticleComplexAdapter.ViewHolder vh = (ArticleComplexAdapter.ViewHolder) viewHolder;
-                configureViewHolder(vh,position);
+                configureViewHolder(vh,Nytarticle);
                 break;
             case NO_IMAGE:
                 ArticleComplexAdapter.ViewHolderNoImage vhImage = (ArticleComplexAdapter.ViewHolderNoImage) viewHolder;
-                configureViewHolderNoImage(vhImage,position);
+                configureViewHolderNoImage(vhImage,Nytarticle);
                 break;
             default:
                 break;
         }
-
-
     }
 
-    private void configureViewHolder(ViewHolder vh, int position) {
-        NYTArticle Nytarticle = mArticles.get(position);
+    private void configureViewHolder(ViewHolder vh, NYTArticle nytarticle) {
         ImageView ivImage = vh.IvArticleImage;
         ivImage.setImageResource(0);
-        if (Nytarticle.getMultimedia() != null && !(Nytarticle.getMultimedia().isEmpty())) {
-            String url = Nytarticle.getMultimedia().get(0).getUrl();
+        if (nytarticle.getMultimedia() != null && !(nytarticle.getMultimedia().isEmpty())) {
+            String url = nytarticle.getMultimedia().get(FIRST_MM_IMAGE).getUrl();
             Glide.with(mContext).load(url).placeholder(R.drawable.placeholder).
                     error(R.drawable.error).into(ivImage);
         }
-        vh.tvArticleHeadline.setText(Nytarticle.getHeadline().getMain());
-
-        TextView tvCategory = vh.tvArticleCategory;
-        tvCategory.setText(Nytarticle.getNewsDesk());
-        tvCategory.setBackgroundColor(Nytarticle.getArticleColor());
-
-        TextView tvSynopsis = vh.tvArticleSynopsis;
-        tvSynopsis.setText(Nytarticle.getSnippet());
+        vh.tvArticleHeadline.setText(nytarticle.getHeadline().getMain());
+        vh.tvArticleCategory.setText(nytarticle.getNewsDesk());
+        vh.tvArticleCategory.setBackgroundColor(nytarticle.getArticleColor());
+        vh.tvArticleSynopsis.setText(nytarticle.getSnippet());
     }
 
-    private void configureViewHolderNoImage(ViewHolderNoImage vhImage, int position) {
-        NYTArticle Nytarticle = mArticles.get(position);
-
-        vhImage.tvArticleHeadline.setText(Nytarticle.getHeadline().getMain());
-        TextView tvSynopsisvhImage = vhImage.tvArticleSynopsis;
-        tvSynopsisvhImage.setText(Nytarticle.getSnippet());
+    private void configureViewHolderNoImage(ViewHolderNoImage vhImage, NYTArticle nytarticle) {
+        vhImage.tvArticleHeadline.setText(nytarticle.getHeadline().getMain());
+        vhImage.tvArticleSynopsis.setText(nytarticle.getSnippet());
 
     }
-
-
-//**************************VIEW HOLDERS ****************************//
-
-
-
-
 
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
         @BindView(R.id.ivArticleImage) public ImageView IvArticleImage;
         @BindView(R.id.tvArticleHeadline) public TextView tvArticleHeadline;
         @BindView(R.id.tvArticleCategory) public TextView tvArticleCategory;
         @BindView(R.id.tvArticleSynopsis) public TextView tvArticleSynopsis;
 
 
-        // We also create a constructor that accepts the entire item row
-        // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
-            // Stores the itemView in a public final member variable that can be used
-            // to access the context from any ViewHolder instance.
+         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
@@ -225,17 +202,9 @@ public class ArticleComplexAdapter extends
 
     public static class ViewHolderNoImage extends RecyclerView.ViewHolder {
 
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
         @BindView(R.id.tvArticleHeadline) public TextView tvArticleHeadline;
         @BindView(R.id.tvArticleSynopsis) public TextView tvArticleSynopsis;
-
-
-        // We also create a constructor that accepts the entire item row
-        // and does the view lookups to find each subview
         public ViewHolderNoImage(View itemView) {
-            // Stores the itemView in a public final member variable that can be used
-            // to access the context from any ViewHolder instance.
             super(itemView);
             ButterKnife.bind(this,itemView);
         }

@@ -1,6 +1,5 @@
 package com.codepath.nytimes.activities;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -22,6 +21,7 @@ import com.codepath.nytimes.models.FilterSettings;
 import com.codepath.nytimes.models.NYTArticle;
 import com.codepath.nytimes.models.NYTArticleResponse;
 import com.codepath.nytimes.network.NetworkUtil;
+import com.codepath.nytimes.properties.Properties;
 import com.codepath.nytimes.service.NYTimesClient;
 
 import java.util.ArrayList;
@@ -32,16 +32,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.codepath.nytimes.properties.Properties.API_CALL_FAILED;
+import static com.codepath.nytimes.properties.Properties.FIRST_PAGE;
+import static com.codepath.nytimes.properties.Properties.FRAGMENT_MODAL_OVERLAY;
+import static com.codepath.nytimes.properties.Properties.GRID_SPACEOUT;
+import static com.codepath.nytimes.properties.Properties.NETWORK_FAILURE;
+import static com.codepath.nytimes.properties.Properties.SETTINGS_OBJ_KEY;
+import static com.codepath.nytimes.properties.Properties.SGRID_NO_OF_COLUMNS;
+
+
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogListener{
 
     @BindView(R.id.rvArticles)RecyclerView rvArticles;
     ArrayList<NYTArticle> articles;
     ArticleComplexAdapter adapter;
-    int FIRST_PAGE =0;
     FilterSettings fragFilterSettings;
     private EndlessRecyclerViewScrollListener scrollListener;
     String searchQuery;
-    ProgressDialog progressDialog;
+    NYTimesClient NYTClient;
 
 
     @Override
@@ -49,38 +57,38 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Toolbar tbSearch = (Toolbar) findViewById(R.id.tbSearch);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
-        // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(tbSearch);
-
         ButterKnife.bind(this);
-        fragFilterSettings = new FilterSettings();
-         // Create adapter passing in the sample user data
-        articles = new ArrayList<>();
-        adapter = new ArticleComplexAdapter(this, articles);
-        // Attach the adapter to the recyclerview to populate items
-        rvArticles.setAdapter(adapter);
-        // Set layout manager to position the items
-// First param is number of columns and second param is orientation i.e Vertical or Horizontal
+        bindDataToAdapter(this);
+        setRecyleViewLayout();
+
+    }
+
+
+    private void setRecyleViewLayout() {
         StaggeredGridLayoutManager gridLayoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                new StaggeredGridLayoutManager(SGRID_NO_OF_COLUMNS, StaggeredGridLayoutManager.VERTICAL);
         // Attach the layout manager to the recycler view
         rvArticles.setLayoutManager(gridLayoutManager);        // That's all!
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                //pageNumber = page;
-                getArticles(page);
+                      getArticles(page);
             }
         };
         // Adds the scroll listener to RecyclerView
         rvArticles.addOnScrollListener(scrollListener);
-        SpacesItemDecoration spacesitemdecor = new SpacesItemDecoration(10);
+        SpacesItemDecoration spacesitemdecor = new SpacesItemDecoration(GRID_SPACEOUT);
         rvArticles.addItemDecoration(spacesitemdecor);
+    }
 
-
+    private void bindDataToAdapter(SearchActivity searchActivity) {
+        fragFilterSettings = new FilterSettings();
+        // Create adapter passing in the sample user data
+        articles = new ArrayList<>();
+        adapter = new ArticleComplexAdapter(this, articles);
+        // Attach the adapter to the recyclerview to populate items
+        rvArticles.setAdapter(adapter);
     }
 
     public void getArticles(int page) {
@@ -89,38 +97,43 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 articles.clear();
                 scrollListener.resetState();
             }
+            callNYTAPI(page);
 
-            NYTimesClient NYTClient = NYTimesClient.getNewInstance();
+        }
+    }
 
-            if (NetworkUtil.isInternetAvailable(getApplicationContext()) && NetworkUtil.isOnline()) {
+    private void callNYTAPI(int page) {
 
-                Call<NYTArticleResponse> call = NYTClient.NYTimesClientFactory().
-                        getArticlesFromServer("a5ac3eb802f44561b5fa0f398b07f65f", new Integer(page), searchQuery, fragFilterSettings.beginDate,
-                                fragFilterSettings.sortOrder, fragFilterSettings.getNewsDeskQuery());
-                call.enqueue(new Callback<NYTArticleResponse>() {
-                    @Override
-                    public void onResponse(Call<NYTArticleResponse> call, Response<NYTArticleResponse> response) {
-                        NYTArticleResponse NYTAr = response.body();
-                        if (NYTAr == null || NYTAr.getResponse().getArticles().isEmpty()) {
-                            Toast.makeText(SearchActivity.this, "No articles matching search criteria!",
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            articles.addAll(NYTAr.getResponse().getArticles());
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<NYTArticleResponse> call, Throwable t) {
-                        Toast.makeText(SearchActivity.this, "Request to API failed!",
+        if (NetworkUtil.isInternetAvailable(getApplicationContext()) && NetworkUtil.isOnline()) {
+
+            NYTClient = NYTimesClient.getNewInstance();
+            Call<NYTArticleResponse> call = NYTClient.NYTimesClientFactory().
+                    getArticlesFromServer(getApplicationContext().getString(R.string.nyt_api_key), new Integer(page), searchQuery, fragFilterSettings.beginDate,
+                            fragFilterSettings.sortOrder, fragFilterSettings.getNewsDeskQuery());
+
+            call.enqueue(new Callback<NYTArticleResponse>() {
+                @Override
+                public void onResponse(Call<NYTArticleResponse> call, Response<NYTArticleResponse> response) {
+                    NYTArticleResponse NYTAr = response.body();
+                    if (NYTAr == null || NYTAr.getResponse().getArticles().isEmpty()) {
+                        Toast.makeText(SearchActivity.this, Properties.NO_MATCH,
                                 Toast.LENGTH_LONG).show();
+                    } else {
+                        articles.addAll(NYTAr.getResponse().getArticles());
+                        adapter.notifyDataSetChanged();
                     }
-                });
+                }
+                @Override
+                public void onFailure(Call<NYTArticleResponse> call, Throwable t) {
+                    Toast.makeText(SearchActivity.this, API_CALL_FAILED,
+                            Toast.LENGTH_LONG).show();
+                }
+            });
 
-            } else {
-                Toast.makeText(SearchActivity.this, "Internet Connection is unavailable. Try again later",
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
+        } else {
+            Toast.makeText(SearchActivity.this, NETWORK_FAILURE,
+                    Toast.LENGTH_LONG).show();
+            return;
         }
     }
 
@@ -152,7 +165,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            //View v = findViewById(R.id.action_settings);
             onFilterSettings();
             return true;
         }
@@ -163,9 +175,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         FragmentManager fm = getSupportFragmentManager();
         FilterDialogFragment fdf = new FilterDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("SettingObj", fragFilterSettings);
+        bundle.putParcelable(SETTINGS_OBJ_KEY, fragFilterSettings);
         fdf.setArguments(bundle);
-        fdf.show(fm, "FRAGMENT FILTER");
+        fdf.show(fm, FRAGMENT_MODAL_OVERLAY);
     }
 
     @Override

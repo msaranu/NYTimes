@@ -15,7 +15,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public class NYTimesClient {
-    public static final String API_KEY = "a5ac3eb802f44561b5fa0f398b07f65f";
     public static final String API_BASE_URL = "https://api.nytimes.com/";
     NYTimesClient.NYTimesService NYservice;
 

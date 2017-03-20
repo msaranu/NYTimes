@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="HeadLine"
+        android:text="@string/head_line"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
         android:textSize="@dimen/large_text"
@@ -20,7 +20,7 @@
         android:id="@+id/tvArticleHeadline" />
 
     <TextView
-        android:text="Snippet"
+        android:text="@string/snippet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="4"

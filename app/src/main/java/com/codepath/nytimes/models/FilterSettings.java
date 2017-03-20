@@ -104,4 +104,12 @@ public class FilterSettings implements Parcelable {
         parcel.writeString(ndFashionCheck);
         parcel.writeString(ndSportsCheck);
     }
+
+    public void reset() {
+        beginDate =null;
+        sortOrder = null;
+        ndArtsCheck = null;
+        ndFashionCheck = null;
+        ndSportsCheck = null;
+    }
 }

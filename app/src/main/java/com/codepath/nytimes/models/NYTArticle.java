@@ -237,10 +237,9 @@ public class NYTArticle implements Parcelable {
 
     public String getNewsDesk() {
         if(newsDesk == null) {
-
             newsDesk = "General";
         }
-        return newsDesk;
+        return newsDesk.toUpperCase();
     }
 
     public void setNewsDesk(String newsDesk) {

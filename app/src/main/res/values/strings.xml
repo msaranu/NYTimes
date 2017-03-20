@@ -12,6 +12,9 @@
     <string name="btnFilterSubmit">SAVE</string>
     <string name="btnFilterText">FILTER</string>
     <string name="title_activity_nytarticle">NYTArticleActivity</string>
+    <string name="head_line">HeadLine</string>
+    <string name="news_desk">NewsDesk</string>
+    <string name="snippet">Snippet</string>
     <string-array name="sort_order">
         <item>Oldest</item>
         <item>Newest</item>

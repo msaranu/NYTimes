@@ -21,10 +21,11 @@ import com.codepath.nytimes.utils.DateUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.codepath.nytimes.properties.Properties.FRAGMENT_MODAL_OVERLAY_DATE_TITLE;
 
 /**
  * Created by Saranu on 3/17/17.
@@ -42,7 +43,6 @@ public class FilterDialogFragment extends DialogFragment {
     @BindView(R.id.cbFilter3) public CheckBox cbFilter3;
     @BindView(R.id.btnFilterSubmit) public Button btnFilterSubmit;
     FilterSettings filterObj ;
-    DateUtil du ;
 
 
 
@@ -69,6 +69,24 @@ public class FilterDialogFragment extends DialogFragment {
         View fView = inflater.inflate(R.layout.fragment_filter, container);
         Bundle bundle = this.getArguments();
         ButterKnife.bind(this,fView);
+        populateViewsfromObject(bundle);
+        return fView;
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        btnFilterSubmit.setOnClickListener(view1 ->
+        populateObjectfromViews());
+
+    }
+
+
+
+
+    private void populateViewsfromObject(Bundle bundle) {
+
         if (bundle != null ) {
             filterObj = bundle.getParcelable("SettingObj");
             if (filterObj.getBeginDate() != null) {
@@ -97,67 +115,65 @@ public class FilterDialogFragment extends DialogFragment {
         }
         etBeginDate.setOnClickListener(v -> {
             // TODO Auto-generated method stub
-            //To show current date in the datepicker
-            int mYear;
-            int mMonth;
-            int mDay;
-            if(filterObj.getBeginDate() == null){
-                Calendar mcurrentDate = Calendar.getInstance();
-                 mYear = mcurrentDate.get(Calendar.YEAR);
-                 mMonth = mcurrentDate.get(Calendar.MONTH);
-                 mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-            }else {
-                Calendar mcurrentDate = Calendar.getInstance();
-                try {
-                    mcurrentDate.setTime(
-                            new SimpleDateFormat("yyyyMMdd").parse(filterObj.getBeginDate()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                 mYear = mcurrentDate.get(Calendar.YEAR);
-                 mMonth = mcurrentDate.get(Calendar.MONTH);
-                 mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-            }
-
-            DatePickerDialog mDatePicker=new DatePickerDialog(getContext(), (datepicker, selectedyear, selectedmonth, selectedday) -> {
-                // TODO Auto-generated method stub
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(selectedyear, selectedmonth, selectedday);
-              //      String date = String.valueOf(selectedmonth)+"/"+ String.valueOf(selectedday) +"/"+String.valueOf(selectedyear);
-                 etBeginDate.setText(new SimpleDateFormat("MM/dd/yyyy").format(newDate.getTime()));
-            },mYear, mMonth, mDay);
-            mDatePicker.setTitle("Select Date");
-            mDatePicker.show();  });
-
-        return fView;
+            processCalendarDatePicker();
+          });
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        btnFilterSubmit.setOnClickListener(view1 -> {
-            try {
-                filterObj.setBeginDate(new SimpleDateFormat("yyyyMMdd", Locale.US).format(new SimpleDateFormat("MM/dd/yyyy",Locale.US).parse(etBeginDate.getText().toString())));
-            } catch (ParseException e) {
-                e.printStackTrace();
+
+
+    private void processCalendarDatePicker() {
+        int mYear;
+        int mMonth;
+        int mDay;
+        if(filterObj.getBeginDate() == null){
+            Calendar mcurrentDate = Calendar.getInstance();
+            mYear = mcurrentDate.get(Calendar.YEAR);
+            mMonth = mcurrentDate.get(Calendar.MONTH);
+            mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+        }else {
+            Calendar mcurrentDate = Calendar.getInstance();
+            mcurrentDate.setTime(DateUtil.formatDatefromAPI(filterObj.getBeginDate()));
+            mYear = mcurrentDate.get(Calendar.YEAR);
+            mMonth = mcurrentDate.get(Calendar.MONTH);
+            mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+        }
+
+        DatePickerDialog mDatePicker=new DatePickerDialog(getContext(), (datepicker, selectedyear, selectedmonth, selectedday) -> {
+            // TODO Auto-generated method stub
+            Calendar newDate = Calendar.getInstance();
+            newDate.set(selectedyear, selectedmonth, selectedday);
+            etBeginDate.setText(DateUtil.formatDate(newDate));
+        },mYear, mMonth, mDay);
+        mDatePicker.setTitle(FRAGMENT_MODAL_OVERLAY_DATE_TITLE);
+        mDatePicker.show();
+    }
+
+
+    private void populateObjectfromViews() {
+
+        {
+            filterObj.reset();
+            if(etBeginDate.getText() != null){
+                filterObj.setBeginDate(DateUtil.formatDatetoAPI(etBeginDate.getText().toString()));
             }
             filterObj.setSortOrder(spSortOrder.getSelectedItem().toString());
-            //filterObj.setSortOrder("oldest");
+
             if(cbFilter1.isChecked()) {
                 filterObj.setNdArtsCheck(cbFilter1.getText().toString());
-            } else filterObj.setNdArtsCheck(null);
+            }
+
             if(cbFilter2.isChecked()) {
                 filterObj.setNdFashionCheck(cbFilter2.getText().toString());
-            }else filterObj.setNdFashionCheck(null);
+            }
+
             if(cbFilter3.isChecked()) {
                 filterObj.setNdSportsCheck(cbFilter3.getText().toString());
-            }else filterObj.setNdSportsCheck(null);
+            }
+
             FilterDialogListener listener = (FilterDialogListener) getActivity();
             listener.onFinishFilterDialog(filterObj);
-            // Close the dialog and return back to the parent activity
             dismiss();
-        });
-
+        }
     }
 }
